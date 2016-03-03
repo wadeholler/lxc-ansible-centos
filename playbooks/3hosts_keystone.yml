@@ -1,0 +1,6 @@
+---
+- name: keystone lxc
+  hosts: base
+  roles:
+    - ../roles/keystone_lxc
+
