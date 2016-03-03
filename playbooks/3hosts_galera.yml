@@ -1,0 +1,6 @@
+---
+- name: test lxc
+  hosts: base
+  roles:
+    - ../roles/lxctest
+

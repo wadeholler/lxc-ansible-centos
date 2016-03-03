@@ -1,0 +1,75 @@
+---
+- name: Create a cntrl1 centos container
+  lxc_container:
+    name: cntrl1
+    template: centos.mod
+    state: stopped
+    container_command: |
+      sed -i 's/dhcp/none/g' /etc/sysconfig/network-scripts/ifcfg-eth0
+      ssh-keygen -N "" -f ~/.ssh/id_rsa
+    container_config:
+      - "lxc.network.link = br0"
+      - "lxc.network.veth.pair = cntrl1_eth0"
+      - "lxc.network.ipv4.gateway = 192.168.242.1"
+      - "lxc.network.ipv4 = 192.168.242.201/24"
+      - "lxc.pts = 1024"
+      - "lxc.kmsg = 0"
+
+
+- name: copy our authorized_key file into place
+  copy: src=authorized_keys dest=/var/lib/lxc/cntrl1/rootfs/root/.ssh/authorized_keys mode=0600
+
+- name: Start a container
+  lxc_container:
+    name: cntrl1
+    state: started
+
+- name: Create a cntrl2 centos container
+  lxc_container:
+    name: cntrl2
+    template: centos.mod
+    state: stopped
+    container_command: |
+      sed -i 's/dhcp/none/g' /etc/sysconfig/network-scripts/ifcfg-eth0
+      ssh-keygen -N "" -f ~/.ssh/id_rsa
+    container_config:
+      - "lxc.network.link = br0"
+      - "lxc.network.veth.pair = cntrl2_eth0"
+      - "lxc.network.ipv4.gateway = 192.168.242.1"
+      - "lxc.network.ipv4 = 192.168.242.202/24"
+      - "lxc.pts = 1024"
+      - "lxc.kmsg = 0"
+
+
+- name: copy our authorized_key file into place
+  copy: src=authorized_keys dest=/var/lib/lxc/cntrl2/rootfs/root/.ssh/authorized_keys mode=0600
+
+- name: Start a container
+  lxc_container:
+    name: cntrl2
+    state: started
+
+- name: Create a cntrl3 centos container
+  lxc_container:
+    name: cntrl3
+    template: centos.mod
+    state: stopped
+    container_command: |
+      sed -i 's/dhcp/none/g' /etc/sysconfig/network-scripts/ifcfg-eth0
+      ssh-keygen -N "" -f ~/.ssh/id_rsa
+    container_config:
+      - "lxc.network.link = br0"
+      - "lxc.network.veth.pair = cntrl3_eth0"
+      - "lxc.network.ipv4.gateway = 192.168.242.1"
+      - "lxc.network.ipv4 = 192.168.242.203/24"
+      - "lxc.pts = 1024"
+      - "lxc.kmsg = 0"
+
+
+- name: copy our authorized_key file into place
+  copy: src=authorized_keys dest=/var/lib/lxc/cntrl3/rootfs/root/.ssh/authorized_keys mode=0600
+
+- name: Start a container
+  lxc_container:
+    name: cntrl3
+    state: started

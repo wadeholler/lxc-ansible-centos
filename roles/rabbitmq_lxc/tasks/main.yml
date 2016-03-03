@@ -1,0 +1,75 @@
+---
+- name: Create a rabbitmq1 centos container
+  lxc_container:
+    name: rabbitmq1
+    template: centos.mod
+    state: stopped
+    container_command: |
+      sed -i 's/dhcp/none/g' /etc/sysconfig/network-scripts/ifcfg-eth0
+      ssh-keygen -N "" -f ~/.ssh/id_rsa
+    container_config:
+      - "lxc.network.link = br0"
+      - "lxc.network.veth.pair = rabbitmq1_eth0"
+      - "lxc.network.ipv4.gateway = 192.168.242.1"
+      - "lxc.network.ipv4 = 192.168.242.204/24"
+      - "lxc.pts = 1024"
+      - "lxc.kmsg = 0"
+
+
+- name: copy our authorized_key file into place
+  copy: src=authorized_keys dest=/var/lib/lxc/rabbitmq1/rootfs/root/.ssh/authorized_keys mode=0600
+
+- name: Start a container
+  lxc_container:
+    name: rabbitmq1
+    state: started
+
+- name: Create a rabbitmq2 centos container
+  lxc_container:
+    name: rabbitmq2
+    template: centos.mod
+    state: stopped
+    container_command: |
+      sed -i 's/dhcp/none/g' /etc/sysconfig/network-scripts/ifcfg-eth0
+      ssh-keygen -N "" -f ~/.ssh/id_rsa
+    container_config:
+      - "lxc.network.link = br0"
+      - "lxc.network.veth.pair = rabbitmq2_eth0"
+      - "lxc.network.ipv4.gateway = 192.168.242.1"
+      - "lxc.network.ipv4 = 192.168.242.205/24"
+      - "lxc.pts = 1024"
+      - "lxc.kmsg = 0"
+
+
+- name: copy our authorized_key file into place
+  copy: src=authorized_keys dest=/var/lib/lxc/rabbitmq2/rootfs/root/.ssh/authorized_keys mode=0600
+
+- name: Start a container
+  lxc_container:
+    name: rabbitmq2
+    state: started
+
+- name: Create a rabbitmq3 centos container
+  lxc_container:
+    name: rabbitmq3
+    template: centos.mod
+    state: stopped
+    container_command: |
+      sed -i 's/dhcp/none/g' /etc/sysconfig/network-scripts/ifcfg-eth0
+      ssh-keygen -N "" -f ~/.ssh/id_rsa
+    container_config:
+      - "lxc.network.link = br0"
+      - "lxc.network.veth.pair = rabbitmq3_eth0"
+      - "lxc.network.ipv4.gateway = 192.168.242.1"
+      - "lxc.network.ipv4 = 192.168.242.206/24"
+      - "lxc.pts = 1024"
+      - "lxc.kmsg = 0"
+
+
+- name: copy our authorized_key file into place
+  copy: src=authorized_keys dest=/var/lib/lxc/rabbitmq3/rootfs/root/.ssh/authorized_keys mode=0600
+
+- name: Start a container
+  lxc_container:
+    name: rabbitmq3
+    state: started
