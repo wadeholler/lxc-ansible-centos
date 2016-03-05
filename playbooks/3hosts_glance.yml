@@ -1,0 +1,6 @@
+---
+- name: glance lxc
+  hosts: base
+  roles:
+    - ../roles/glance_lxc
+
