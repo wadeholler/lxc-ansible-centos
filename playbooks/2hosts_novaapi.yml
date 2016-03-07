@@ -1,0 +1,6 @@
+---
+- name: nova_api lxc
+  hosts: base
+  roles:
+    - ../roles/nova_api_lxc
+
