@@ -1,0 +1,6 @@
+---
+- name: neutron_agent lxc
+  hosts: base
+  roles:
+    - ../roles/neutron_agents_lxc
+
