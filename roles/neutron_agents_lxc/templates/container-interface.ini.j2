@@ -1,0 +1,19 @@
+# {{ ansible_managed }}
+
+# Create a veth pair within the container
+lxc.network.type = veth
+# Network device within the container
+lxc.network.name = eth1
+# Name the veth after the container
+# NOTE(major): The lxc.network.veth.pair line must appear right after
+# lxc.network.name or it will be ignored.
+lxc.network.veth.pair = {{ container_name }}_eth1
+# Host link to attach to, this should be a bridge if lxc.network.type = veth
+lxc.network.link = br1
+# Hardware Address
+lxc.network.hwaddr = 00:16:3e:xx:xx:xx
+# enable the device on boot
+lxc.network.flags = up
+# Set the container network MTU
+# lxc.network.mtu = 1500
+

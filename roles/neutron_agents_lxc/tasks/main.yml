@@ -1,7 +1,9 @@
 ---
 - name: Create a neutrona1 centos container
+  vars:
+    container_name: neutrona1
   lxc_container:
-    name: neutrona1
+    name: "{{ container_name }}"
     template: centos.mod
     state: stopped
     container_command: |
@@ -9,7 +11,7 @@
       ssh-keygen -N "" -f ~/.ssh/id_rsa
     container_config:
       - "lxc.network.link = br0"
-      - "lxc.network.veth.pair = neutrona1_eth0"
+      - "lxc.network.veth.pair = {{ container_name }}_eth0"
       - "lxc.network.ipv4.gateway = 192.168.242.1"
       - "lxc.network.ipv4 = 192.168.242.216/24"
       - "lxc.pts = 1024"
@@ -17,16 +19,47 @@
 
 
 - name: copy our authorized_key file into place
-  copy: src=authorized_keys dest=/var/lib/lxc/neutrona1/rootfs/root/.ssh/authorized_keys mode=0600
+  vars:
+    container_name: neutrona1
+  copy: src=authorized_keys dest=/var/lib/lxc/{{ container_name }}/rootfs/root/.ssh/authorized_keys mode=0600
+
+- name: LXC host config for container networks
+  vars:
+    container_name: neutrona1
+  template:
+    src: "container-interface.ini.j2"
+    dest: "/var/lib/lxc/{{ container_name }}/eth1.ini"
+    owner: "root"
+    group: "root"
+    mode: "0644"
+  tags:
+    - lxc-container-networks
+
+- name: Container network includes
+  vars:
+    container_name: neutrona1
+  lineinfile:
+    dest: "/var/lib/lxc/{{ container_name }}/config"
+    line: "lxc.include = /var/lib/lxc/{{ container_name }}/eth1.ini"
+    backup: "true"
+  tags:
+    - lxc-container-networks
+
 
 - name: Start a container
+  vars:
+    container_name: neutrona1
   lxc_container:
-    name: neutrona1
+    name: "{{ container_name }}"
     state: started
 
+############
+
 - name: Create a neutrona2 centos container
+  vars:
+    container_name: neutrona2
   lxc_container:
-    name: neutrona2
+    name: "{{ container_name }}"
     template: centos.mod
     state: stopped
     container_command: |
@@ -34,7 +67,7 @@
       ssh-keygen -N "" -f ~/.ssh/id_rsa
     container_config:
       - "lxc.network.link = br0"
-      - "lxc.network.veth.pair = neutrona2_eth0"
+      - "lxc.network.veth.pair = {{ container_name }}_eth0"
       - "lxc.network.ipv4.gateway = 192.168.242.1"
       - "lxc.network.ipv4 = 192.168.242.217/24"
       - "lxc.pts = 1024"
@@ -42,10 +75,36 @@
 
 
 - name: copy our authorized_key file into place
-  copy: src=authorized_keys dest=/var/lib/lxc/neutrona2/rootfs/root/.ssh/authorized_keys mode=0600
+  vars:
+    container_name: neutrona2
+  copy: src=authorized_keys dest=/var/lib/lxc/{{ container_name }}/rootfs/root/.ssh/authorized_keys mode=0600
+
+- name: LXC host config for container networks
+  vars:
+    container_name: neutrona2
+  template:
+    src: "container-interface.ini.j2"
+    dest: "/var/lib/lxc/{{ container_name }}/eth1.ini"
+    owner: "root"
+    group: "root"
+    mode: "0644"
+  tags:
+    - lxc-container-networks
+
+- name: Container network includes
+  vars:
+    container_name: neutrona2
+  lineinfile:
+    dest: "/var/lib/lxc/{{ container_name }}/config"
+    line: "lxc.include = /var/lib/lxc/{{ container_name }}/eth1.ini"
+    backup: "true"
+  tags:
+    - lxc-container-networks
 
 - name: Start a container
+  vars:
+    container_name: neutrona2
   lxc_container:
-    name: neutrona2
+    name: "{{ container_name }}"
     state: started
 
