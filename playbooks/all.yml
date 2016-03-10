@@ -1,0 +1,9 @@
+- include: 3hosts_galera.yml
+- include: 3hosts_rabbitmq.yml
+- include: 3hosts_keystone.yml
+- include: 1host_glance.yml
+- include: 2hosts_novaapi.yml
+- include: 2hosts_neutronagent.yml
+- include: 2hosts_neutronserver.yml
+
+
